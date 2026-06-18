@@ -1,0 +1,13 @@
+path,fire_true,smoke_true,fire_score,smoke_score
+scene_001.jpg,1,1,0.96,0.91
+scene_002.jpg,1,0,0.83,0.12
+scene_003.jpg,0,1,0.08,0.78
+scene_004.jpg,0,0,0.04,0.06
+scene_005.jpg,1,1,0.71,0.64
+scene_006.jpg,0,0,0.31,0.22
+scene_007.jpg,0,1,0.10,0.43
+scene_008.jpg,1,0,0.47,0.18
+scene_009.jpg,0,0,0.62,0.16
+scene_010.jpg,1,1,0.89,0.84
+scene_011.jpg,0,1,0.13,0.69
+scene_012.jpg,1,0,0.77,0.09

@@ -1,0 +1,44 @@
+# Dataset catalog. Licenses/terms can change: verify at the source before redistribution.
+datasets:
+  d_fire:
+    task: detection
+    classes: [fire, smoke]
+    size: "21,000+ images, including 9,838 negative images"
+    source: "https://github.com/gaia-solutions-on-demand/DFireDataset"
+    access: manual
+    notes: "YOLO boxes; unusually useful negative set; official train/val/test download available."
+  figlib:
+    task: temporal_classification
+    classes: [smoke]
+    size: "nearly 25,000 labeled images from fixed cameras"
+    source: "https://arxiv.org/abs/2112.08598"
+    access: manual
+    notes: "Use camera/event grouping. Intended for early wildfire smoke and SmokeyNet-style models."
+  corsican_fire_database:
+    task: segmentation_video
+    classes: [fire]
+    source: "https://cfdb.univ-corse.fr/"
+    access: manual
+    notes: "Drone wildfire imagery. Keep complete video sequences in a single split."
+  firesense:
+    task: video_classification
+    classes: [fire, smoke]
+    source: "https://zenodo.org/communities/firesense/"
+    access: manual
+    notes: "Indoor/outdoor multimodal fire videos; inspect each record's terms and annotations."
+  smoke_bench:
+    task: restoration
+    classes: [smoke]
+    source: "https://github.com/ncfjd/SmokeBench"
+    access: manual
+    notes: "Paired early-stage smoke/clear images; useful for robustness, not a primary detector benchmark."
+  d_fire_videos:
+    task: temporal_detection
+    classes: [fire, smoke]
+    source: "https://github.com/gaia-solutions-on-demand/DFireDataset"
+    access: manual
+    notes: "Surveillance videos linked by D-Fire; preserve source video IDs."
+
+# Add FASDD only after confirming its current official host and redistribution terms.
+# Avoid Kaggle/Roboflow mirrors as canonical sources unless provenance is documented.
+
