@@ -19,6 +19,8 @@ def main():
 
     from ultralytics import YOLO
 
+    output = Path(args.output).resolve()
+    output.mkdir(parents=True, exist_ok=True)
     model = YOLO(args.model)
     model.train(
         data=args.data,
@@ -26,7 +28,7 @@ def main():
         imgsz=args.image_size,
         batch=args.batch_size,
         device=args.device,
-        project=args.output,
+        project=str(output),
         name="train",
     )
     metrics = model.val(
@@ -34,7 +36,7 @@ def main():
         split="test",
         imgsz=args.image_size,
         device=args.device,
-        project=args.output,
+        project=str(output),
         name="test",
     )
     result = {
@@ -47,7 +49,7 @@ def main():
             "for image-level TP/TN/FP/FN in addition to mAP."
         ),
     }
-    target = Path(args.output) / "test_metrics.json"
+    target = output / "test_metrics.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(result, indent=2))
     print(json.dumps(result, indent=2))
@@ -55,4 +57,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

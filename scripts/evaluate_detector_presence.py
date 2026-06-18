@@ -17,6 +17,13 @@ def main():
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--confidence", type=float, default=0.25)
     parser.add_argument("--image-size", type=int, default=640)
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=4,
+        help="Images loaded per inference call; reduce to 1 on CUDA out-of-memory",
+    )
+    parser.add_argument("--device", default=None, help="Ultralytics device, e.g. 0, cpu")
     parser.add_argument("--split", choices=["train", "val", "test"], default="test")
     parser.add_argument("--output", default="runs/detection/presence")
     args = parser.parse_args()
@@ -24,27 +31,43 @@ def main():
 
     frame = read_manifest(args.manifest)
     frame = frame[frame["split"] == args.split].reset_index(drop=True)
+    if frame.empty:
+        raise ValueError(f"No rows found for split={args.split}")
+    if args.batch_size < 1:
+        raise ValueError("--batch-size must be at least 1")
     model = YOLO(args.weights)
     names = model.names
     records = []
-    for row, result in zip(
-        frame.itertuples(index=False),
-        model.predict(frame["resolved_path"].tolist(), conf=args.confidence, imgsz=args.image_size, stream=True),
-    ):
-        scores = {"fire": 0.0, "smoke": 0.0}
-        for class_id, confidence in zip(result.boxes.cls.tolist(), result.boxes.conf.tolist()):
-            name = str(names[int(class_id)]).lower()
-            if name in scores:
-                scores[name] = max(scores[name], float(confidence))
-        records.append(
-            {
-                "path": row.path,
-                "fire_true": row.fire,
-                "smoke_true": row.smoke,
-                "fire_score": scores["fire"],
-                "smoke_score": scores["smoke"],
-            }
+    total = len(frame)
+    for start in range(0, total, args.batch_size):
+        batch = frame.iloc[start : start + args.batch_size]
+        results = model.predict(
+            source=batch["resolved_path"].tolist(),
+            conf=args.confidence,
+            imgsz=args.image_size,
+            device=args.device,
+            verbose=False,
         )
+        for row, result in zip(batch.itertuples(index=False), results, strict=True):
+            scores = {"fire": 0.0, "smoke": 0.0}
+            for class_id, confidence in zip(
+                result.boxes.cls.tolist(), result.boxes.conf.tolist()
+            ):
+                name = str(names[int(class_id)]).lower()
+                if name in scores:
+                    scores[name] = max(scores[name], float(confidence))
+            records.append(
+                {
+                    "path": row.path,
+                    "fire_true": row.fire,
+                    "smoke_true": row.smoke,
+                    "fire_score": scores["fire"],
+                    "smoke_score": scores["smoke"],
+                }
+            )
+        done = min(start + args.batch_size, total)
+        print(f"\rEvaluated {done}/{total} images", end="", flush=True)
+    print()
     predictions = pd.DataFrame(records)
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)

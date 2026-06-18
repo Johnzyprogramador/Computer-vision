@@ -217,6 +217,8 @@ python scripts/evaluate_detector_presence.py \
   --weights runs/yolo11s/train/weights/best.pt \
   --manifest data/manifests/dfire.csv \
   --split test \
+  --batch-size 4 \
+  --device 0 \
   --output runs/yolo11s/presence
 
 python scripts/visualize_metrics.py \

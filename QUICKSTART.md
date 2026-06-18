@@ -129,8 +129,13 @@ python scripts/evaluate_detector_presence.py \
   --weights runs/yolo11s/train/weights/best.pt \
   --manifest data/manifests/dfire.csv \
   --split test \
+  --batch-size 4 \
+  --device 0 \
   --output runs/yolo11s/presence
 ```
+
+The evaluator deliberately loads only a few images at a time. If it reports CUDA out-of-memory,
+rerun with `--batch-size 1`.
 
 Tune thresholds using validation predictions, never test predictions:
 
