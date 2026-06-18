@@ -73,8 +73,9 @@ python scripts/check_manifest.py --manifest data/manifests/dfire.csv
 
 D-Fire class IDs default to `0=smoke`, `1=fire`. Verify this against the downloaded edition and use
 `--smoke-class-id` / `--fire-class-id` if its metadata differs.
-If official split folders are present, retain them by editing the generated manifest rather than
-inventing a new benchmark split.
+The script recognizes flat `images/` + `labels/` and pre-split `train/` + `test/` layouts. For the
+latter, the official test set is preserved and 15% of train is deterministically reserved for
+validation when no `val/` directory exists.
 
 For YOLO:
 

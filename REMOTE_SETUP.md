@@ -91,15 +91,19 @@ Suppose the uploaded dataset is:
 
 ```text
 /remote/datasets/D-Fire/
-├── images/
-└── labels/
+├── train/
+│   ├── images/
+│   └── labels/
+└── test/
+    ├── images/
+    └── labels/
 ```
 
 Confirm it:
 
 ```bash
-find /remote/datasets/D-Fire/images -type f | head
-find /remote/datasets/D-Fire/labels -type f | head
+find /remote/datasets/D-Fire/train/images -type f | head
+find /remote/datasets/D-Fire/train/labels -type f | head
 du -sh /remote/datasets/D-Fire
 ```
 
@@ -119,7 +123,9 @@ python scripts/build_yolo_dataset.py \
 ```
 
 D-Fire defaults are `0=smoke`, `1=fire`. Inspect several labels and the downloaded metadata before
-starting a long run.
+starting a long run. The preparer recognizes both `D-Fire/images` + `labels` and the official
+`D-Fire/train/...` + `test/...` layout. When no official validation directory exists, it reserves a
+deterministic 15% of the training images for validation while leaving the official test set intact.
 
 ## 7. Verify the complete installation
 
@@ -220,4 +226,3 @@ python scripts/visualize_metrics.py \
 ```
 
 Open or download the generated HTML files through VS Code's remote Explorer.
-
