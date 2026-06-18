@@ -15,6 +15,8 @@ detection channel in a safety-critical installation.
 
 For a literal installation → training → visualization walkthrough, use
 [`QUICKSTART.md`](QUICKSTART.md).
+For a server accessed through VS Code Remote SSH, use
+[`REMOTE_SETUP.md`](REMOTE_SETUP.md).
 
 ## Why the data format matters
 

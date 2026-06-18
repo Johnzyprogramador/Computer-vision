@@ -2,11 +2,24 @@
 set -euo pipefail
 
 ENV_DIR="${1:-.venv-full}"
-PYTHON_BIN="${PYTHON_BIN:-python3.12}"
 
-if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
-  echo "Could not find $PYTHON_BIN. Install Python 3.12 or run:"
-  echo "  PYTHON_BIN=python3.11 bash scripts/setup_env.sh $ENV_DIR"
+if [ -n "${PYTHON_BIN:-}" ]; then
+  CANDIDATES=("$PYTHON_BIN")
+else
+  CANDIDATES=(python3.12 python3.11 python3.10)
+fi
+
+SELECTED_PYTHON=""
+for candidate in "${CANDIDATES[@]}"; do
+  if command -v "$candidate" >/dev/null 2>&1; then
+    SELECTED_PYTHON="$candidate"
+    break
+  fi
+done
+
+if [ -z "$SELECTED_PYTHON" ]; then
+  echo "Python 3.10, 3.11, or 3.12 is required."
+  echo "Ubuntu example: sudo apt install python3.12 python3.12-venv"
   exit 1
 fi
 
@@ -16,7 +29,8 @@ if [ -e "$ENV_DIR" ]; then
   exit 2
 fi
 
-"$PYTHON_BIN" -m venv "$ENV_DIR"
+echo "Using $SELECTED_PYTHON ($("$SELECTED_PYTHON" --version))"
+"$SELECTED_PYTHON" -m venv "$ENV_DIR"
 "$ENV_DIR/bin/python" -m pip install --upgrade pip setuptools wheel
 "$ENV_DIR/bin/pip" install -e ".[all]"
 "$ENV_DIR/bin/python" scripts/doctor.py
@@ -25,4 +39,3 @@ fi
 echo
 echo "Full environment is ready."
 echo "Activate it with: source $ENV_DIR/bin/activate"
-
