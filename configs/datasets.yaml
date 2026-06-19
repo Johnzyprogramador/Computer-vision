@@ -13,7 +13,14 @@ datasets:
     size: "nearly 25,000 labeled images from fixed cameras"
     source: "https://arxiv.org/abs/2112.08598"
     access: manual
-    notes: "Use camera/event grouping. Intended for early wildfire smoke and SmokeyNet-style models."
+    notes: "Official split JSON schema is supported by scripts/prepare_figlib.py."
+  pyronear_2025:
+    task: temporal_detection
+    classes: [smoke]
+    size: "50,000 images, about 150,000 annotations, 640 wildfire events"
+    source: "https://github.com/joseg20/wildfires2025"
+    access: manual_google_drive
+    notes: "Primary early-smoke recommendation; YOLO images plus event video sequences."
   corsican_fire_database:
     task: segmentation_video
     classes: [fire]
@@ -29,9 +36,21 @@ datasets:
   smoke_bench:
     task: restoration
     classes: [smoke]
-    source: "https://github.com/ncfjd/SmokeBench"
+    source: "https://github.com/QianfengY/SmokeBench"
     access: manual
-    notes: "Paired early-stage smoke/clear images; useful for robustness, not a primary detector benchmark."
+    notes: "Paired smoky/clean images; supported as a smoke classification robustness dataset."
+  fire_sentry:
+    task: segmentation_video
+    classes: [fire]
+    source: "https://github.com/Munan222/FireSentry-Benchmark-Dataset"
+    access: public_region_a
+    notes: "Infrared videos paired with fire-mask videos; forecasting/segmentation, not ignition detection."
+  flame_3:
+    task: thermal_detection_segmentation
+    classes: [fire]
+    source: "https://arxiv.org/abs/2412.02831"
+    access: kaggle_subset_or_request
+    notes: "Synchronized visual and radiometric thermal UAV data from prescribed burns."
   d_fire_videos:
     task: temporal_detection
     classes: [fire, smoke]
@@ -41,4 +60,3 @@ datasets:
 
 # Add FASDD only after confirming its current official host and redistribution terms.
 # Avoid Kaggle/Roboflow mirrors as canonical sources unless provenance is documented.
-

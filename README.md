@@ -17,6 +17,8 @@ For a literal installation → training → visualization walkthrough, use
 [`QUICKSTART.md`](QUICKSTART.md).
 For a server accessed through VS Code Remote SSH, use
 [`REMOTE_SETUP.md`](REMOTE_SETUP.md).
+For PYRONEAR, FIgLib, SmokeBench, FireSentry, and the recent-paper methodology, use
+[`EARLY_FIRE_DATASETS.md`](EARLY_FIRE_DATASETS.md).
 
 ## Why the data format matters
 

@@ -22,7 +22,13 @@ def image_dataset(manifest, transform):
     return ManifestImages()
 
 
-def temporal_dataset(manifest, transform, sequence_length: int, stride: int = 1):
+def temporal_dataset(
+    manifest,
+    transform,
+    sequence_length: int,
+    stride: int = 1,
+    label_mode: str = "last",
+):
     import torch
     from torch.utils.data import Dataset
 
@@ -46,8 +52,12 @@ def temporal_dataset(manifest, transform, sequence_length: int, stride: int = 1)
                 transform(Image.open(path).convert("RGB"))
                 for path in rows["resolved_path"].tolist()
             ]
-            labels = rows[["fire", "smoke"]].max(axis=0).to_numpy()
+            if label_mode == "last":
+                labels = rows.iloc[-1][["fire", "smoke"]].to_numpy()
+            elif label_mode == "max":
+                labels = rows[["fire", "smoke"]].max(axis=0).to_numpy()
+            else:
+                raise ValueError(f"Unsupported temporal label mode: {label_mode}")
             return torch.stack(frames), torch.tensor(labels, dtype=torch.float32), rows.iloc[-1]["path"]
 
     return ManifestSequences()
-

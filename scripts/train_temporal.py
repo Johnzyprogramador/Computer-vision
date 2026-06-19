@@ -22,6 +22,12 @@ def main():
     parser.add_argument("--model", choices=["cnn_lstm", "video_swin_t"], default="cnn_lstm")
     parser.add_argument("--sequence-length", type=int, default=16)
     parser.add_argument("--stride", type=int, default=2)
+    parser.add_argument(
+        "--label-mode",
+        choices=["last", "max"],
+        default="last",
+        help="Use the last frame label for early detection, or any-positive label over the clip",
+    )
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--image-size", type=int, default=224)
@@ -45,7 +51,13 @@ def main():
     loaders = {}
     for split in ("train", "val", "test"):
         subset = frame[frame["split"] == split].reset_index(drop=True)
-        dataset = temporal_dataset(subset, transform, args.sequence_length, args.stride)
+        dataset = temporal_dataset(
+            subset,
+            transform,
+            args.sequence_length,
+            args.stride,
+            args.label_mode,
+        )
         if len(dataset) == 0:
             raise ValueError(f"No {split} sequences; reduce sequence length/stride or add frames")
         loaders[split] = DataLoader(
